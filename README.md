@@ -1,4 +1,4 @@
 ProbendingTLK
 =============
 
-The probending plugin for avatar based server (used with bendingTLA)
+The probending plugin for an avatar based server (used with bendingTLA)
