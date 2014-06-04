@@ -2,18 +2,19 @@ package probending;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+//Need another SAVING METHOD NOT IN THE config.yml!
 public class PBWarps {
-    private JavaPlugin plugin;
+    private PBConfigManager config;
     
     private Map<String, Location> teamSpawns = new HashMap<>();
     
-    public PBWarps(JavaPlugin plugin){
-        this.plugin = plugin;
+    public PBWarps(){
+        config = new PBConfigManager("warps");
         loadSpawns();
     }
     
@@ -30,14 +31,14 @@ public class PBWarps {
     
     private void saveSpawn(String name) {
         name = name.toLowerCase();
-        plugin.getConfig().set("spawns." + name + ".game", locToString(teamSpawns.get(name)));
-        plugin.saveConfig();
+        config.getConfig().set("spawns." + name + ".game", locToString(teamSpawns.get(name)));
+        config.saveConfig();
     }
 
     private void loadSpawn(String name) {
         name = name.toLowerCase();
         teamSpawns.put(name,
-                stringToLoc(plugin.getConfig().getString("spawns." + name + ".game")));
+                stringToLoc(config.getConfig().getString("spawns." + name + ".game")));
     }
 
     private String locToString(Location location) {
@@ -46,7 +47,7 @@ public class PBWarps {
 
     private Location stringToLoc(String s) {
         String[] args = s.split("\\|");
-        World world = plugin.getServer().getWorld(args[0]);
+        World world = Bukkit.getServer().getWorld(args[0]);
         Double x = Double.parseDouble(args[1]);
         Double y = Double.parseDouble(args[2]);
         Double z = Double.parseDouble(args[3]);

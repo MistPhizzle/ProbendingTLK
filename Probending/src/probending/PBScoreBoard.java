@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -13,38 +12,26 @@ import org.bukkit.scoreboard.Team;
 
 public class PBScoreBoard{
     private PBDatabase pbdatabase;
-    private JavaPlugin plugin;
     private ScoreboardManager manager = Bukkit.getScoreboardManager();
     public Scoreboard board = manager.getNewScoreboard();
     public Objective objectiveWaiting = board.registerNewObjective("Waiting", "dummy");
     Team red = board.registerNewTeam("red");
     Team blue = board.registerNewTeam("blue");
     
-    public PBScoreBoard(JavaPlugin plugin, PBDatabase pbdatabase) {
-        this.plugin = plugin;
+    public PBScoreBoard(PBDatabase pbdatabase) {
         this.pbdatabase = pbdatabase;
         red.setAllowFriendlyFire(false);
         blue.setAllowFriendlyFire(false);
-    }
-
-    public void removePlayersFromTeam(){
-        for (Team team : board.getTeams()){
-            for (OfflinePlayer offPlayer : team.getPlayers()){
-                Player player = offPlayer.getPlayer();
-                if ("red".equals(team.getName()))
-                    red.removePlayer(player);
-                if ("blue".equals(team.getName()))
-                    blue.removePlayer(player);
-            }
-        }
+        createScoreboard();
     }
     
-    public void createScoreboard(){
+    private void createScoreboard(){
         for (Player p : Bukkit.getOnlinePlayers()) {
            addPlayerToScoreboard(p);
         }
      }
         
+    //Does not work properly! The tag above the player can not hold the rating (maybe to big ?_?)
      public void addPlayerToScoreboard(Player player) {
         Scoreboard s = manager.getNewScoreboard();
         player.setScoreboard(s);
@@ -56,21 +43,9 @@ public class PBScoreBoard{
         objectiveSidebar.setDisplayName(ChatColor.BLUE + "Probending");
         updatePlayerScoreboard();
     }
-    
-    public void makeDatabaseForPlayer(Player player) {
-        pbdatabase.insertPlayerToDatabase(player);
-    }
-    
-    public void addWin1(Player player) {
-        pbdatabase.addWin1(player);
-    }
-    
-    public void addWin3(Player player) {
-        pbdatabase.addWin3(player);
-    }
      
     public void updatePlayerScoreboard() {
-        for (Player player : plugin.getServer().getOnlinePlayers()){
+        for (Player player : Bukkit.getServer().getOnlinePlayers()){
             Scoreboard s = player.getScoreboard();
             Objective objectiveSidebar = s.getObjective(DisplaySlot.SIDEBAR);
             Objective objectiveWins = s.getObjective(DisplaySlot.BELOW_NAME);
@@ -94,7 +69,19 @@ public class PBScoreBoard{
         }
     }
     
+    public void removePlayersFromTeam(){
+        for (Team team : board.getTeams()){
+            for (OfflinePlayer offPlayer : team.getPlayers()){
+                Player player = offPlayer.getPlayer();
+                if ("red".equals(team.getName()))
+                    red.removePlayer(player);
+                if ("blue".equals(team.getName()))
+                    blue.removePlayer(player);
+            }
+        }
+    }
+    
     public void broadcast(String string){
-        plugin.getServer().broadcastMessage(string);
+        Bukkit.getServer().broadcastMessage(string);
     }
 }

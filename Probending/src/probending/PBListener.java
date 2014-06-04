@@ -14,12 +14,14 @@ public class PBListener implements Listener{
     PBScoreBoard scoreboard;
     PBTeleporter setplaces;
     PBGameStart gamestart;
+    PBDatabase database;
     //int iREevents = 0;
     
-    public PBListener(PBScoreBoard scoreboard, PBGameStart gamestart, PBTeleporter setplaces) {
+    public PBListener(PBScoreBoard scoreboard, PBGameStart gamestart, PBTeleporter setplaces, PBDatabase database) {
         this.scoreboard = scoreboard;
         this.gamestart = gamestart;
         this.setplaces = setplaces;
+        this.database = database;
     }
     
     //Method below does not work, find another solution to prevent bending before battle!
@@ -42,7 +44,7 @@ public class PBListener implements Listener{
         event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 18000 * 12, 4));
         event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 18000 * 12, 4));
         if(!event.getPlayer().hasPlayedBefore()) {
-            scoreboard.makeDatabaseForPlayer(event.getPlayer());
+            database.insertPlayerToDatabase(event.getPlayer());
             setplaces.teleportElementChange(event.getPlayer());
         } else {
             setplaces.teleportSpawn(event.getPlayer());

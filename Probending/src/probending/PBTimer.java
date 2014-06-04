@@ -10,7 +10,6 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 public class PBTimer {
-
     private JavaPlugin plugin;
     private PBScoreBoard scoreboard;
     private BukkitRunnable updater;
@@ -42,13 +41,13 @@ public class PBTimer {
 
     public void stop() {
         updater.cancel();
-        for (Player player : plugin.getServer().getOnlinePlayers())
+        for (Player player : Bukkit.getServer().getOnlinePlayers())
             player.getScoreboard().resetScores(Bukkit.getOfflinePlayer(ChatColor.YELLOW + "Time: " + ChatColor.AQUA + (time)));
     }
 
     private void updateTime() {
         if (time == 1) {
-            for (Player player : plugin.getServer().getOnlinePlayers())
+            for (Player player : Bukkit.getServer().getOnlinePlayers())
                 player.getScoreboard().resetScores(Bukkit.getOfflinePlayer(ChatColor.YELLOW + "Time: " + ChatColor.AQUA + (time)));
             execute();
         } else {
@@ -76,7 +75,7 @@ public class PBTimer {
 
     private void clearTime() {
         if (showTimes) {
-            for (Player player : plugin.getServer().getOnlinePlayers()){
+            for (Player player : Bukkit.getServer().getOnlinePlayers()){
                 player.getScoreboard().resetScores(Bukkit.getOfflinePlayer(ChatColor.YELLOW + "Time: " + ChatColor.AQUA + (time + 1)));
                 Scoreboard s = player.getScoreboard();
                 Objective objectiveSidebar = s.getObjective(DisplaySlot.SIDEBAR);

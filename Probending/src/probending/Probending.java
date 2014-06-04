@@ -13,35 +13,54 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Probending extends JavaPlugin{
-    public final Logger logger = Logger.getLogger("minecraft");
-    PBGameStart gamestart;
-    PBScoreBoard scoreboard;
-    PBTeleporter setplaces;
-    public static Probending plugin;
-    WorldEditPlugin worldEdit;
-    WorldGuardPlugin worldGuard;
-    PBDatabase pbdatabase;
+    public static final Logger logger = Logger.getLogger("minecraft");
+    private PBGameStart gamestart;
+    private PBScoreBoard scoreboard;
+    private PBTeleporter teleporter;
+    private static Probending plugin;
+    private WorldEditPlugin worldEdit;
+    private WorldGuardPlugin worldGuard;
+    private PBDatabase pbdatabase;
+    private PBConfigManager configManager;
     
-    //Database
-    private String address = "localhost";
-    private String port = "3306";
-    private String databasename = "Probending";
-    private String username = "root";
-    private String password = "";
+    //Database | make a config manager for it! (Remake the PBWarps so they get saved in another file than config.yml!)
+    private String address;
+    private String port;
+    private String databasename;
+    private String username;
+    private String password;
     
     @Override
     public void onEnable() {
         PluginDescriptionFile pdfFile = this.getDescription();
-        this.logger.log(Level.INFO, ChatColor.GREEN + "{0} has been enabled!", pdfFile.getName());
+        Probending.logger.log(Level.INFO, ChatColor.GREEN + "{0} has been enabled!", pdfFile.getName());
         worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         worldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+        configManager = new PBConfigManager("config"); 
+        getDatabaseInfo();
         pbdatabase = new PBDatabase(this, address, port, databasename, username, password);
-        scoreboard = new PBScoreBoard(this, pbdatabase);
-        gamestart = new PBGameStart(this, scoreboard);
-        setplaces = new PBTeleporter(this, scoreboard, gamestart);
-        getServer().getPluginManager().registerEvents(new PBListener(scoreboard, gamestart, setplaces), this);
-        scoreboard.createScoreboard();
-        
+        scoreboard = new PBScoreBoard(pbdatabase);
+        gamestart = new PBGameStart(this, scoreboard, pbdatabase);
+        teleporter = new PBTeleporter(scoreboard, gamestart);
+        getServer().getPluginManager().registerEvents(new PBListener(scoreboard, gamestart, teleporter, pbdatabase), this);
+    }
+    
+    private void getDatabaseInfo(){
+        if (!configManager.getConfig().contains("MySQL.MySQLHost") || !configManager.getConfig().contains("MySQL.Port") 
+                || !configManager.getConfig().contains("MySQL.DatabaseName") || !configManager.getConfig().contains("MySQL.username")
+                || !configManager.getConfig().contains("MySQL.password")){
+            configManager.getConfig().set("MySQL.MySQLHost", "localhost");
+            configManager.getConfig().set("MySQL.Port", "3306");
+            configManager.getConfig().set("MySQL.DatabaseName", "DatabaseNamehere");
+            configManager.getConfig().set("MySQL.username", "usernamehere");
+            configManager.getConfig().set("MySQL.password", "passwordhere");
+            configManager.saveConfig();
+        }
+        address = configManager.getConfig().getString("MySQL.MySQLHost");        
+        port = configManager.getConfig().getString("MySQL.Port");        
+        databasename = configManager.getConfig().getString("MySQL.DatabaseName");        
+        username = configManager.getConfig().getString("MySQL.username");        
+        password = configManager.getConfig().getString("MySQL.password");
     }
     
     @Override
@@ -50,7 +69,7 @@ public class Probending extends JavaPlugin{
             Player player = (Player) sender;
             if (cmd.getName().equalsIgnoreCase("spawn")) {
                 gamestart.tryLeaveQueue(player);
-                setplaces.teleportSpawn(player);
+                teleporter.teleportSpawn(player);
             } else if (cmd.getName().equalsIgnoreCase("probending")) {
                 for(int i = 0; i < args.length; i++){
                     args[i] = args[i].toLowerCase();
@@ -81,7 +100,7 @@ public class Probending extends JavaPlugin{
                             break;
                         case "change":
                             gamestart.tryLeaveQueue(player);
-                            setplaces.teleportElementChange(player);
+                            teleporter.teleportElementChange(player);
                             break;
                         default:
                             showChatInfoBegin(player);
@@ -90,18 +109,23 @@ public class Probending extends JavaPlugin{
                 } else if (args.length == 2) {
                     switch (args[0]) {
                         case "team":
-                            if ("create".equals((args[1]))){
-                                player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.DARK_AQUA + "Probending Team Configuration" + ChatColor.DARK_RED + " oOo");
-                                player.sendMessage(ChatColor.AQUA + "Try: " + ChatColor.BLUE + "/probending team create " + ChatColor.RED + "[name]");
-                            } else if ("invite".equals((args[1]))){
-                                player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.DARK_AQUA + "Probending Team Configuration" + ChatColor.DARK_RED + " oOo");
-                                player.sendMessage(ChatColor.AQUA + "Try: " + ChatColor.BLUE + "/probending team invite " + ChatColor.RED + "[player]");
-                            }else if ("kick".equals((args[1]))){
-                                player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.DARK_AQUA + "Probending Team Configuration" + ChatColor.DARK_RED + " oOo");
-                                player.sendMessage(ChatColor.AQUA + "Try: " + ChatColor.BLUE + "/probending team kick " + ChatColor.RED + "[player]");
-                            }else{
-                                showChatInfoTeam(player);
-                            }
+                            switch (args[1]) {
+                                case "create":
+                                    player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.DARK_AQUA + "Probending Team Configuration" + ChatColor.DARK_RED + " oOo");
+                                    player.sendMessage(ChatColor.AQUA + "Try: " + ChatColor.BLUE + "/probending team create " + ChatColor.RED + "[name]");
+                                    break;
+                                case "invite":
+                                    player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.DARK_AQUA + "Probending Team Configuration" + ChatColor.DARK_RED + " oOo");
+                                    player.sendMessage(ChatColor.AQUA + "Try: " + ChatColor.BLUE + "/probending team invite " + ChatColor.RED + "[player]");
+                                    break;
+                                case "kick":
+                                    player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.DARK_AQUA + "Probending Team Configuration" + ChatColor.DARK_RED + " oOo");
+                                    player.sendMessage(ChatColor.AQUA + "Try: " + ChatColor.BLUE + "/probending team kick " + ChatColor.RED + "[player]");
+                                    break;
+                                default:
+                                    showChatInfoTeam(player);
+                                    break;
+                                }
                             break;
                         case "join":
                             switch (args[1]) {
@@ -110,6 +134,9 @@ public class Probending extends JavaPlugin{
                                     break;
                                 case "3v3":
                                     gamestart.tryJoinTeam(player, "3v3");
+                                    break;
+                                default:
+                                    player.sendMessage(ChatColor.DARK_RED + "Sorry but this is not a mode to play on!");
                                     break;
                             }
                             break;
@@ -122,7 +149,7 @@ public class Probending extends JavaPlugin{
                             break;
                         case "setspawn":
                             if (player.isOp() || player.hasPermission("probending.setspawn")){
-                                setplaces.setSpawn(args[1], player.getLocation());
+                                teleporter.setSpawn(args[1], player.getLocation());
                                 player.sendMessage(ChatColor.BLUE + "SetSpawn for: " + args[1]);
                             } else
                                 player.sendMessage(ChatColor.DARK_RED + "Sorry but your name is not runefist, is it?!");

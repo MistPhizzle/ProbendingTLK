@@ -3,6 +3,7 @@ package probending;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -15,24 +16,25 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 
 public class PBGameStart {
-
     private JavaPlugin plugin;
     private PBScoreBoard scoreboard;
     private PBTeleporter setplaces;
+    private PBDatabase database;
     
     private PBTimer timer;
-    final static int PreGametime = 8;
-    final static int ProbendingMatch1v1 = 90;
-    final static int ProbendingMatch3v3 = 180;
-    final static int DeathMatch = 30;
+    private final static int PreGametime = 8;
+    private final static int ProbendingMatch1v1 = 90;
+    private final static int ProbendingMatch3v3 = 180;
+    private final static int DeathMatch = 30;
     private boolean mayWalk = true;
     private boolean preGame = false;
     private boolean hasEnded = true;
     private String gameType;
 
-    public PBGameStart(JavaPlugin plugin, PBScoreBoard scoreboard) {
+    public PBGameStart(JavaPlugin plugin, PBScoreBoard scoreboard, PBDatabase database) {
         this.plugin = plugin;
         this.scoreboard = scoreboard;
+        this.database = database;
     }
 
     public void startPreGame(final String gameType) {
@@ -104,9 +106,9 @@ public class PBGameStart {
                 for (OfflinePlayer offplayer : scoreboard.blue.getPlayers()){
                     Player player = offplayer.getPlayer();
                     if ("1v1".equals(gameType))
-                        scoreboard.addWin1(player);
+                        database.addWin1(player);
                     else if ("3v3".equals(gameType))
-                        scoreboard.addWin3(player);
+                        database.addWin3(player);
                     scoreboard.broadcast(ChatColor.BLUE + player.getName());
                 }
                 break;
@@ -115,9 +117,9 @@ public class PBGameStart {
                 for (OfflinePlayer offplayer : scoreboard.red.getPlayers()){
                     Player player = offplayer.getPlayer();
                     if ("1v1".equals(gameType))
-                        scoreboard.addWin1(player);
+                        database.addWin1(player);
                     else if ("3v3".equals(gameType))
-                        scoreboard.addWin3(player);
+                        database.addWin3(player);
                     scoreboard.broadcast(ChatColor.RED + player.getName());
                 }
                 break;
@@ -214,27 +216,27 @@ public class PBGameStart {
             List<Player> queuedPlayers1v1 = new ArrayList<>();
             List<Player> queuedPlayers3v3 = new ArrayList<>();
             
-            for (Player p : plugin.getServer().getOnlinePlayers()) {
+            for (Player p : Bukkit.getServer().getOnlinePlayers()) {
                 if (scoreboard.objectiveWaiting.getScore(p).getScore() == 1 || scoreboard.objectiveWaiting.getScore(p).getScore() == 3) {
                     queuedPlayers1v1.add(p);
                     PlayersQueued1v1++;
                 }
             }
             
-            for (Player p : plugin.getServer().getOnlinePlayers()) {
+            for (Player p : Bukkit.getServer().getOnlinePlayers()) {
                 if (scoreboard.objectiveWaiting.getScore(p).getScore() == 2 || scoreboard.objectiveWaiting.getScore(p).getScore() == 3) {
                     queuedPlayers3v3.add(p);
                     PlayersQueued3v3++;
                 }
             }
             
-            for (Player p : plugin.getServer().getOnlinePlayers()){
+            for (Player p : Bukkit.getServer().getOnlinePlayers()){
                 if (scoreboard.objectiveWaiting.getScore(p).getScore() == 1 || scoreboard.objectiveWaiting.getScore(p).getScore() == 2 || scoreboard.objectiveWaiting.getScore(p).getScore() == 3) {
                     playersQueued++;
                 }
             }
             
-            for (Player p : plugin.getServer().getOnlinePlayers()){
+            for (Player p : Bukkit.getServer().getOnlinePlayers()){
                 if (scoreboard.objectiveWaiting.getScore(p).getScore() == 1 || scoreboard.objectiveWaiting.getScore(p).getScore() == 2 || scoreboard.objectiveWaiting.getScore(p).getScore() == 3) {
                     p.sendMessage(ChatColor.DARK_GRAY + "Player queued: " + ChatColor.GRAY + playersQueued);
                     p.sendMessage(ChatColor.DARK_GRAY + "Player queued for 1v1: " + ChatColor.GRAY + PlayersQueued1v1);
@@ -271,12 +273,12 @@ public class PBGameStart {
                         scoreboard.objectiveWaiting.getScore(plist[i]).setScore(4);
                     }
                     for (Team team : scoreboard.board.getTeams()) {
-                        plugin.getServer().broadcastMessage(ChatColor.GREEN + team.getDisplayName() + ":");
+                        Bukkit.getServer().broadcastMessage(ChatColor.GREEN + team.getDisplayName() + ":");
                         for (OfflinePlayer p : team.getPlayers()) {
-                            plugin.getServer().broadcastMessage(ChatColor.GOLD + p.getName());
+                            Bukkit.getServer().broadcastMessage(ChatColor.GOLD + p.getName());
                         }
                     }
-                    plugin.getServer().broadcastMessage(ChatColor.DARK_GREEN + "GAME STARTED!");
+                    Bukkit.getServer().broadcastMessage(ChatColor.DARK_GREEN + "GAME STARTED!");
                     startPreGame(gameType);
                     return true;
                 }

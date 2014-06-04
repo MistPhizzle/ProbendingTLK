@@ -6,12 +6,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
 public class PBTeleporter {
-    private JavaPlugin plugin;
     private PBScoreBoard scoreboard;
     private PBGameStart gamestart;
     private PBWarps warps;
@@ -28,11 +26,10 @@ public class PBTeleporter {
     double yaw2 = ((90 + 90) * Math.PI) / 180;
     Vector blue = new Vector((Math.sin(pitch2) * Math.cos(yaw2)), (Math.sin(pitch2) * Math.sin(yaw2)), Math.cos(pitch2));
 
-    public PBTeleporter(JavaPlugin plugin, PBScoreBoard scoreboard, PBGameStart gamestart) {
-        this.plugin = plugin;
+    public PBTeleporter(PBScoreBoard scoreboard, PBGameStart gamestart) {
         this.scoreboard = scoreboard;
         this.gamestart = gamestart;
-        warps = new PBWarps(plugin);
+        this.warps = new PBWarps();
     }
 
     //Game start
