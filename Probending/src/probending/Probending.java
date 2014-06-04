@@ -30,6 +30,7 @@ public class Probending extends JavaPlugin{
     private String username;
     private String password;
     
+    //A fix for the teleporter&gamestart bad coding :/
     @Override
     public void onEnable() {
         PluginDescriptionFile pdfFile = this.getDescription();
@@ -42,6 +43,7 @@ public class Probending extends JavaPlugin{
         scoreboard = new PBScoreBoard(pbdatabase);
         gamestart = new PBGameStart(this, scoreboard, pbdatabase);
         teleporter = new PBTeleporter(scoreboard, gamestart);
+        gamestart.setTeleporter(teleporter);
         getServer().getPluginManager().registerEvents(new PBListener(scoreboard, gamestart, teleporter, pbdatabase), this);
     }
     

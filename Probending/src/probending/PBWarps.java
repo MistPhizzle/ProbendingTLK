@@ -5,7 +5,6 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.plugin.java.JavaPlugin;
 
 //Need another SAVING METHOD NOT IN THE config.yml!
 public class PBWarps {

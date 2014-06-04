@@ -18,7 +18,7 @@ import org.bukkit.scoreboard.Team;
 public class PBGameStart {
     private JavaPlugin plugin;
     private PBScoreBoard scoreboard;
-    private PBTeleporter setplaces;
+    private PBTeleporter teleporter;
     private PBDatabase database;
     
     private PBTimer timer;
@@ -36,9 +36,13 @@ public class PBGameStart {
         this.scoreboard = scoreboard;
         this.database = database;
     }
+    
+    public void setTeleporter(PBTeleporter teleporter){
+        this.teleporter = teleporter;
+    }
 
     public void startPreGame(final String gameType) {
-        setplaces.startGame();
+        teleporter.startGame();
         timer = new PBTimer(this.plugin, this.scoreboard, this) {
             @Override
             public void execute() {
@@ -77,7 +81,7 @@ public class PBGameStart {
         if (preGame) {
             startGame(gameType);
         } else {
-            endGame(setplaces.getLosingTeam(), gameType);
+            endGame(teleporter.getLosingTeam(), gameType);
         }
     }
 
@@ -130,7 +134,7 @@ public class PBGameStart {
             for (OfflinePlayer offPlayer : team.getPlayers()) {
                 Player player = offPlayer.getPlayer();
                 scoreboard.objectiveWaiting.getScore(player).setScore(0);
-                setplaces.teleportSpawn(player);
+                teleporter.teleportSpawn(player);
                 player.getEquipment().getBoots().setType(Material.AIR);
                 player.getEquipment().getHelmet().setType(Material.AIR);
                 player.getEquipment().getLeggings().setType(Material.AIR);
@@ -147,7 +151,7 @@ public class PBGameStart {
      public void outOfGame(Player player, String gameType) {
         scoreboard.objectiveWaiting.getScore(player).setScore(0);
         if (scoreboard.board.getPlayerTeam(player) != null) {
-            setplaces.teleportSpawn(player);
+            teleporter.teleportSpawn(player);
             String LosingTeam = scoreboard.board.getPlayerTeam(player).getName();
             scoreboard.board.getPlayerTeam(player).removePlayer(player);
             int teamRedSize = scoreboard.board.getTeam("red").getSize();

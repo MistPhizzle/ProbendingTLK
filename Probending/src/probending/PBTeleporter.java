@@ -2,6 +2,7 @@ package probending;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -16,7 +17,7 @@ public class PBTeleporter {
     
     boolean DeathMatch = false;
     private Map<String, Integer> playerLocation = new HashMap<>();
-    private Map<Player, Integer> playerFaults = new HashMap<>();
+    private Map<String, Integer> playerFaults = new HashMap<>();
     
     //Facing the right way! Need a solution for this, so it gets saved as well!
     double pitch1 = ((90 + 90) * Math.PI) / 180;
@@ -29,7 +30,7 @@ public class PBTeleporter {
     public PBTeleporter(PBScoreBoard scoreboard, PBGameStart gamestart) {
         this.scoreboard = scoreboard;
         this.gamestart = gamestart;
-        this.warps = new PBWarps();
+        warps = new PBWarps();
     }
 
     //Game start
@@ -55,6 +56,7 @@ public class PBTeleporter {
                             break;
                     }
                     playerLocation.put(p.getName(), 3);
+                    playerFaults.put(p.getName(), 0);
                 }
             }
             if ("red".equals(team.getName())) {
@@ -74,6 +76,7 @@ public class PBTeleporter {
                             break;
                     }
                     playerLocation.put(p.getName(), 4);
+                    playerFaults.put(p.getName(), 0);
                 }
             }
         }
@@ -130,20 +133,20 @@ public class PBTeleporter {
     
     //Hit line infront of you!
     private void frontLineHit(Player player, int iplace, String team, int fromPlace) {
-        playerFaults.put(player, (playerFaults.get(player) + 1));
-        if (playerFaults.get(player) < 3){
+        playerFaults.put(player.getName(), (playerFaults.get(player.getName()) + 1));
+        if (playerFaults.get(player.getName()) < 3){
             if (team.equals("red")) {
                 player.teleport(warps.getSpawn(placeIntToStr(fromPlace)).setDirection(red));
             } else if (team.equals("blue")) {
                 player.teleport(warps.getSpawn(placeIntToStr(fromPlace)).setDirection(blue));
             }
             scoreboard.broadcast(ChatColor.GOLD + "Player: " + ChatColor.BLUE + player.getDisplayName() + ChatColor.GOLD 
-                    + " has now " + ChatColor.DARK_RED + playerFaults + ChatColor.GOLD + " faults!");
+                    + " has now " + ChatColor.DARK_RED + playerFaults.get(player.getName()) + ChatColor.GOLD + " faults!");
         } else {
             scoreboard.broadcast(ChatColor.GOLD + "Player: " + ChatColor.BLUE + player.getDisplayName() + ChatColor.GOLD 
-                    + " has now " + ChatColor.DARK_RED + playerFaults + ChatColor.GOLD + " faults and will be teleported 1 place back!");
+                    + " has now " + ChatColor.DARK_RED + playerFaults.get(player.getName()) + ChatColor.GOLD + " faults and will be teleported 1 place back!");
             setPlayerLocation(player, iplace, team);
-            playerFaults.put(player, 0);
+            playerFaults.put(player.getName(), 0);
         }
     }
     
