@@ -92,7 +92,7 @@ public class Probending extends JavaPlugin{
                             if (scoreboard.objectiveWaiting.getScore(player).getScore() >= 1){
                                 player.sendMessage(ChatColor.RED + "You have already been queued or are in game!");
                             } else {
-                                gamestart.tryJoinTeam(player, "");
+                                gamestart.tryJoinGame(player, "");
                             }
                             break;
                         case "leave":
@@ -132,10 +132,10 @@ public class Probending extends JavaPlugin{
                         case "join":
                             switch (args[1]) {
                                 case "1v1":
-                                    gamestart.tryJoinTeam(player, "1v1");
+                                    gamestart.tryJoinGame(player, "1v1");
                                     break;
                                 case "3v3":
-                                    gamestart.tryJoinTeam(player, "3v3");
+                                    gamestart.tryJoinGame(player, "3v3");
                                     break;
                                 default:
                                     player.sendMessage(ChatColor.DARK_RED + "Sorry but this is not a mode to play on!");
@@ -188,13 +188,12 @@ public class Probending extends JavaPlugin{
     }
     
     private void showChatInfoBegin(Player player) {
-        player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.RED + "Bending Heroes Probending");
+        player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.RED + "Probending");
         player.sendMessage(ChatColor.DARK_AQUA + "=" + ChatColor.AQUA + "=" + ChatColor.DARK_AQUA + "= " + ChatColor.BLUE + "/probending team");
         player.sendMessage(ChatColor.DARK_AQUA + "=" + ChatColor.AQUA + "=" + ChatColor.DARK_AQUA + "= " + ChatColor.BLUE + "/probending ranking");
         player.sendMessage(ChatColor.DARK_AQUA + "=" + ChatColor.AQUA + "=" + ChatColor.DARK_AQUA + "= " + ChatColor.BLUE + "/probending join" + ChatColor.AQUA + " [1v1/3v3]");
         player.sendMessage(ChatColor.DARK_AQUA + "=" + ChatColor.AQUA + "=" + ChatColor.DARK_AQUA + "= " + ChatColor.BLUE + "/probending leave");
         player.sendMessage(ChatColor.DARK_AQUA + "=" + ChatColor.AQUA + "=" + ChatColor.DARK_AQUA + "= " + ChatColor.BLUE + "/probending change");
-        player.sendMessage(ChatColor.GRAY + "=" + ChatColor.DARK_GRAY + "=" + ChatColor.GRAY + "=" + ChatColor.DARK_GRAY + " Thanks for choosing Bending Heroes!");
     }
     
     private void showChatInfoTeam(Player player) {

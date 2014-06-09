@@ -184,7 +184,7 @@ public class PBGameStart {
     }
 
 //GAMESTART ====================================================================
-    public void tryJoinTeam(Player player, String gameType) {
+    public void tryJoinGame(Player player, String gameType) {
         player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.RED + "Bending Heroes Probending");
         switch (gameType) {
             case "1v1":

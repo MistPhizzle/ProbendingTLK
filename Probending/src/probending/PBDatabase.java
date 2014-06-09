@@ -31,7 +31,7 @@ public class PBDatabase {
         createDatabase();
     }
     
-    public void createDatabase(){
+    private void createDatabase(){
         try {
             statement = c.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS `Players` (`playername` text NOT NULL, `wins1` int(10) NOT NULL, `wins3` int(10) NOT NULL, `teamname` text NOT NULL, `coins` int(10) NOT NULL, `rating` int(10) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
@@ -41,6 +41,7 @@ public class PBDatabase {
         }
     }
     
+    //Everything the database can do \/    
     public void insertPlayerToDatabase(Player player){
         try {
             statement = c.createStatement();
