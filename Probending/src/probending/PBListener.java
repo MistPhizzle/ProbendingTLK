@@ -14,10 +14,10 @@ public class PBListener implements Listener{
     PBScoreBoard scoreboard;
     PBTeleporter setplaces;
     PBGameStart gamestart;
-    PBDatabase database;
+    DBConnection database;
     //int iREevents = 0;
     
-    public PBListener(PBScoreBoard scoreboard, PBGameStart gamestart, PBTeleporter setplaces, PBDatabase database) {
+    public PBListener(PBScoreBoard scoreboard, PBGameStart gamestart, PBTeleporter setplaces, DBConnection database) {
         this.scoreboard = scoreboard;
         this.gamestart = gamestart;
         this.setplaces = setplaces;
@@ -44,7 +44,7 @@ public class PBListener implements Listener{
         event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 18000 * 12, 4));
         event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 18000 * 12, 4));
         if(!event.getPlayer().hasPlayedBefore()) {
-            database.insertPlayerToDatabase(event.getPlayer());
+            Methods.insertPlayerToDatabase(event.getPlayer());
             setplaces.teleportElementChange(event.getPlayer());
         } else {
             setplaces.teleportSpawn(event.getPlayer());

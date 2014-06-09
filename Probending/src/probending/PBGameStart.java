@@ -19,7 +19,6 @@ public class PBGameStart {
     private JavaPlugin plugin;
     private PBScoreBoard scoreboard;
     private PBTeleporter teleporter;
-    private PBDatabase database;
     
     private PBTimer timer;
     private final static int PreGametime = 8;
@@ -31,10 +30,9 @@ public class PBGameStart {
     private boolean hasEnded = true;
     private String gameType;
 
-    public PBGameStart(JavaPlugin plugin, PBScoreBoard scoreboard, PBDatabase database) {
+    public PBGameStart(JavaPlugin plugin, PBScoreBoard scoreboard) {
         this.plugin = plugin;
         this.scoreboard = scoreboard;
-        this.database = database;
     }
     
     public void setTeleporter(PBTeleporter teleporter){
@@ -110,9 +108,9 @@ public class PBGameStart {
                 for (OfflinePlayer offplayer : scoreboard.blue.getPlayers()){
                     Player player = offplayer.getPlayer();
                     if ("1v1".equals(gameType))
-                        database.addWin1(player);
+                        Methods.addWin1(player);
                     else if ("3v3".equals(gameType))
-                        database.addWin3(player);
+                        Methods.addWin3(player);
                     scoreboard.broadcast(ChatColor.BLUE + player.getName());
                 }
                 break;
@@ -121,9 +119,9 @@ public class PBGameStart {
                 for (OfflinePlayer offplayer : scoreboard.red.getPlayers()){
                     Player player = offplayer.getPlayer();
                     if ("1v1".equals(gameType))
-                        database.addWin1(player);
+                        Methods.addWin1(player);
                     else if ("3v3".equals(gameType))
-                        database.addWin3(player);
+                        Methods.addWin3(player);
                     scoreboard.broadcast(ChatColor.RED + player.getName());
                 }
                 break;
