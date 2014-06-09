@@ -13,6 +13,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Probending extends JavaPlugin{
+	
+	public static Probending instance;
     public static final Logger logger = Logger.getLogger("minecraft");
     private PBGameStart gamestart;
     private PBScoreBoard scoreboard;
@@ -37,8 +39,8 @@ public class Probending extends JavaPlugin{
         Probending.logger.log(Level.INFO, ChatColor.GREEN + "{0} has been enabled!", pdfFile.getName());
         worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         worldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
-        configManager = new PBConfigManager("config"); 
-        getDatabaseInfo();
+//        configManager = new PBConfigManager("config"); 
+//        getDatabaseInfo();
         pbdatabase = new PBDatabase(this, address, port, databasename, username, password);
         scoreboard = new PBScoreBoard(pbdatabase);
         gamestart = new PBGameStart(this, scoreboard, pbdatabase);
@@ -46,25 +48,27 @@ public class Probending extends JavaPlugin{
         gamestart.setTeleporter(teleporter);
         getServer().getPluginManager().registerEvents(new PBListener(scoreboard, gamestart, teleporter, pbdatabase), this);
         new Methods(this);
+        Methods.configCheck();
+        instance = this;
     }
     
-    private void getDatabaseInfo(){
-        if (!configManager.getConfig().contains("MySQL.MySQLHost") || !configManager.getConfig().contains("MySQL.Port") 
-                || !configManager.getConfig().contains("MySQL.DatabaseName") || !configManager.getConfig().contains("MySQL.username")
-                || !configManager.getConfig().contains("MySQL.password")){
-            configManager.getConfig().set("MySQL.MySQLHost", "localhost");
-            configManager.getConfig().set("MySQL.Port", "3306");
-            configManager.getConfig().set("MySQL.DatabaseName", "DatabaseNamehere");
-            configManager.getConfig().set("MySQL.username", "usernamehere");
-            configManager.getConfig().set("MySQL.password", "passwordhere");
-            configManager.saveConfig();
-        }
-        address = configManager.getConfig().getString("MySQL.MySQLHost");        
-        port = configManager.getConfig().getString("MySQL.Port");        
-        databasename = configManager.getConfig().getString("MySQL.DatabaseName");        
-        username = configManager.getConfig().getString("MySQL.username");        
-        password = configManager.getConfig().getString("MySQL.password");
-    }
+//    private void getDatabaseInfo(){
+//        if (!configManager.getConfig().contains("MySQL.MySQLHost") || !configManager.getConfig().contains("MySQL.Port") 
+//                || !configManager.getConfig().contains("MySQL.DatabaseName") || !configManager.getConfig().contains("MySQL.username")
+//                || !configManager.getConfig().contains("MySQL.password")){
+//            configManager.getConfig().set("MySQL.MySQLHost", "localhost");
+//            configManager.getConfig().set("MySQL.Port", "3306");
+//            configManager.getConfig().set("MySQL.DatabaseName", "DatabaseNamehere");
+//            configManager.getConfig().set("MySQL.username", "usernamehere");
+//            configManager.getConfig().set("MySQL.password", "passwordhere");
+//            configManager.saveConfig();
+//        }
+//        address = configManager.getConfig().getString("MySQL.MySQLHost");        
+//        port = configManager.getConfig().getString("MySQL.Port");        
+//        databasename = configManager.getConfig().getString("MySQL.DatabaseName");        
+//        username = configManager.getConfig().getString("MySQL.username");        
+//        password = configManager.getConfig().getString("MySQL.password");
+//    }
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) { 
@@ -226,4 +230,9 @@ public class Probending extends JavaPlugin{
         PluginDescriptionFile pdfFile = this.getDescription();
         this.logger.log(Level.INFO, ChatColor.RED + "{0} has been disabled!", pdfFile.getName());
     }
+    
+    public static Probending getInstance() {
+    	return Probending.instance;
+    }
+    
  }

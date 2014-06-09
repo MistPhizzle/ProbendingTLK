@@ -30,7 +30,7 @@ public class PBTeleporter {
     public PBTeleporter(PBScoreBoard scoreboard, PBGameStart gamestart) {
         this.scoreboard = scoreboard;
         this.gamestart = gamestart;
-        warps = new PBWarps();
+        warps = new PBWarps(Probending.getInstance());
     }
 
     //Game start

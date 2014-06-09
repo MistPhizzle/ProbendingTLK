@@ -8,12 +8,14 @@ import org.bukkit.World;
 
 //Need another SAVING METHOD NOT IN THE config.yml!
 public class PBWarps {
-    private PBConfigManager config;
+
+	private static Probending plugin;
     
     private Map<String, Location> teamSpawns = new HashMap<>();
     
-    public PBWarps(){
-        config = new PBConfigManager("warps");
+    public PBWarps(Probending plugin){
+    	PBWarps.plugin = plugin;
+//        config = new PBConfigManager("warps");
         loadSpawns();
     }
     
@@ -30,14 +32,17 @@ public class PBWarps {
     
     private void saveSpawn(String name) {
         name = name.toLowerCase();
-        config.getConfig().set("spawns." + name + ".game", locToString(teamSpawns.get(name)));
-        config.saveConfig();
+        plugin.getConfig().set("Warps." + name + ".game", locToString(teamSpawns.get(name)));
+        plugin.saveConfig();
+//        config.getConfig().set("spawns." + name + ".game", locToString(teamSpawns.get(name)));
+//        config.saveConfig();
     }
 
     private void loadSpawn(String name) {
         name = name.toLowerCase();
-        teamSpawns.put(name,
-                stringToLoc(config.getConfig().getString("spawns." + name + ".game")));
+        teamSpawns.put(name, stringToLoc(plugin.getConfig().getString("Warps." + name + ".game")));
+//        teamSpawns.put(name,
+//                stringToLoc(config.getConfig().getString("spawns." + name + ".game")));
     }
 
     private String locToString(Location location) {
