@@ -185,7 +185,7 @@ public class PBGameStart {
 
 //GAMESTART ====================================================================
     public void tryJoinGame(Player player, String gameType) {
-        player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.RED + "Bending Heroes Probending");
+        player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.RED + "Probending");
         switch (gameType) {
             case "1v1":
                 scoreboard.objectiveWaiting.getScore(player).setScore(1);
@@ -204,7 +204,7 @@ public class PBGameStart {
     }
 
     public void tryLeaveQueue(Player player) {
-        player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.RED + "Bending Heroes Probending");
+        player.sendMessage(ChatColor.DARK_RED + "oOo " + ChatColor.RED + "Probending");
         player.sendMessage(ChatColor.DARK_AQUA + "=" + ChatColor.AQUA + "=" + ChatColor.DARK_AQUA + "= " + ChatColor.RED + "You have been removed from queue/game!");
         outOfGame(player, gameType);   
     }
