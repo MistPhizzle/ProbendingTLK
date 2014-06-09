@@ -45,6 +45,7 @@ public class Probending extends JavaPlugin{
         teleporter = new PBTeleporter(scoreboard, gamestart);
         gamestart.setTeleporter(teleporter);
         getServer().getPluginManager().registerEvents(new PBListener(scoreboard, gamestart, teleporter, pbdatabase), this);
+        new Methods(this);
     }
     
     private void getDatabaseInfo(){
